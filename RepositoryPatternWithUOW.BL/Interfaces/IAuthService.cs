@@ -11,5 +11,6 @@ namespace RepositoryPatternWithUOW.BL.Interfaces
     public interface IAuthService
     {
         Task<AuthModel> RegisterAsync(RegisterModel model);
+        Task<AuthModel> GetTokenAsync(TokenRequstModel model);
     }
 }

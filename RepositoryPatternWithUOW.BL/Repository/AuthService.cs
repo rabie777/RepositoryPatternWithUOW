@@ -24,8 +24,31 @@ namespace RepositoryPatternWithUOW.BL.Repository
             _JWT = jwt.Value;
             _userManager= userManager;
         }
-       
 
+        public async Task<AuthModel> GetTokenAsync(TokenRequstModel model)
+        {
+            var auth = new AuthModel();
+         var user=await _userManager.FindByEmailAsync(model.Email);
+            if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password)) 
+            {
+                auth.Message = "UserName or Password is not correct";
+                return auth;
+            }
+            
+            var jwtSecurityToken = await CreateJwtToken(user);
+
+                auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+                auth.Email = user.Email;
+                auth.IsAuthenticated = true;
+                auth.UserName = user.UserName;
+                auth.ExpiresOn = jwtSecurityToken.ValidTo;
+
+                var roles= await _userManager.GetRolesAsync(user);
+                auth.Roles = roles.ToList();
+
+            return auth;
+         }
+  
         public async Task<AuthModel> RegisterAsync(RegisterModel model)
         {
              if(await _userManager.FindByEmailAsync(model.Email) is not null)
