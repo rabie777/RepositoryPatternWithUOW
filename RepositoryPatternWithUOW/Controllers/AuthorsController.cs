@@ -35,10 +35,17 @@ namespace RepositoryPatternWithUOW.Controllers
            // return Ok(_repository.GetAll());
             return Ok(_UnitofWork.Authors.GetAll());
         }
-        [HttpPost("AddAuthor")]
+        [HttpPost("AddFixedAuthor")]
         public IActionResult AddAuthor()
         {
           var author=  _UnitofWork.Authors.Add(new Author { Name = "Ezzat" });
+            return Ok(_UnitofWork.Complete());
+
+        }
+        [HttpPost("AddAuthor")]
+        public IActionResult AddAuthor(Author model)
+        {
+            var author = _UnitofWork.Authors.Add(model);
             return Ok(_UnitofWork.Complete());
 
         }
