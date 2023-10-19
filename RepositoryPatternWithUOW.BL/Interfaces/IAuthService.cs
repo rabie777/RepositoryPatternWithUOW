@@ -12,5 +12,7 @@ namespace RepositoryPatternWithUOW.BL.Interfaces
     {
         Task<AuthModel> RegisterAsync(RegisterModel model);
         Task<AuthModel> GetTokenAsync(TokenRequstModel model);
+        Task<string>AddRoleAsync(RoleModel model);
+
     }
 }

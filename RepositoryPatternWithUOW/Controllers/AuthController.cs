@@ -39,5 +39,18 @@ namespace RepositoryPatternWithUOW.Controllers
             return Ok(result);
 
         }
+        [HttpPost("AddRole")]
+        public async Task<IActionResult> AddRoleAsync(RoleModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.AddRoleAsync(model);
+            if (!string.IsNullOrEmpty(result))
+                return BadRequest (result);
+
+            return Ok(model);
+
+        }
     }
 }

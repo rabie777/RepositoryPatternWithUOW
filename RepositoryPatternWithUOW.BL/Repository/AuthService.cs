@@ -18,11 +18,29 @@ namespace RepositoryPatternWithUOW.BL.Repository
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _RoleManager;
         private readonly JWT _JWT;
-        public AuthService(UserManager<ApplicationUser> userManager,IOptions<JWT> jwt)
+        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> RoleManager, IOptions<JWT> jwt)
         {
-            _JWT = jwt.Value;
-            _userManager= userManager;
+             _JWT = jwt.Value;
+             _userManager= userManager;
+             _RoleManager = RoleManager;
+        }
+
+        public async Task<string> AddRoleAsync(RoleModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserID);
+            if(user is null ||! await _RoleManager.RoleExistsAsync(model.Role))
+            {
+                return "Invalid User Or  Role";
+            }  
+            if(await _userManager.IsInRoleAsync(user,model.Role))
+                return "User Already assigned to this Role";
+
+           var result= await _userManager.AddToRoleAsync(user, model.Role);
+            return result.Succeeded ? string.Empty : "Something Went Wrong";
+             
+        
         }
 
         public async Task<AuthModel> GetTokenAsync(TokenRequstModel model)

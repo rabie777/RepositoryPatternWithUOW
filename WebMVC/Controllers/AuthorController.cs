@@ -39,6 +39,7 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<IActionResult>Create(Author model)
         {
+             
             try
             {
                 if (!ModelState.IsValid)
